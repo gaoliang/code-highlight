@@ -26,3 +26,43 @@
 html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.custom_footer {
+  color: var(--ifm-color-emphasis-600);
+  display: flex;
+  flex-direction: row wrap;
+  justify-content: space-between;
+}
+
+.custom_copyright {
+  text-align: left;
+  font-size: .8rem;
+}
+
+.custom_social_link {
+  color: var(--ifm-color-emphasis-600);
+  height: 1.8rem;
+  font-size: 1.1rem;
+  display: inline-block;
+  width: 1.8rem;
+  text-align: center;
+}
+
+.custom_social_link:hover {
+  color: var(--ifm-color-emphasis-1000);
+}
+
+@media (max-width: 576px) {
+  .custom_footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+
+
+.header-github-link {
+  font-size: 1.5rem;
+}
