@@ -16,6 +16,10 @@ const config = {
   organizationName: 'gaoliang', // Usually your GitHub org/user name.
   projectName: 'code-highlight', // Usually your repo name.
   stylesheets: ["https://cdn.staticfile.org/font-awesome/5.15.4/css/all.min.css"],
+    i18n: {
+    defaultLocale: 'zh-cn',
+    locales: ['zh-cn'],
+  },
   presets: [
     [
       '@docusaurus/preset-classic',
