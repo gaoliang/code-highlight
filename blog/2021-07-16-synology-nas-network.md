@@ -2,6 +2,8 @@
 
 最近亚马逊群晖 nas 价格新低，购入了一台 DS220+ 双盘位 nas，奈何租房没有公网IP，群晖自带的 Quick Connect 转发又太慢，为了外网也能访问到 nas，只好自己配置内网穿透。
 
+<!--truncate-->
+
 目前主流的内网穿透方案包括 [frp](https://github.com/fatedier/frp) 和 [nps](https://github.com/ehang-io/nps)，其中 nps 的优势是可以直接从 web 页面上进行系统配置。 但考虑到一般也不会频繁调整，所以最终采用了更加成熟的 frp 进行内网穿透。 
 
 ## 构建镜像
