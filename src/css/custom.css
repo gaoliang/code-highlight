@@ -66,3 +66,13 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 .header-github-link {
   font-size: 1.5rem;
 }
+
+.work-experiences {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.work-experiences-item {
+  padding-bottom: 2rem;
+}

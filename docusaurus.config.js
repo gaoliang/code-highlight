@@ -16,10 +16,6 @@ const config = {
   organizationName: 'gaoliang', // Usually your GitHub org/user name.
   projectName: 'code-highlight', // Usually your repo name.
   stylesheets: ["https://cdn.staticfile.org/font-awesome/5.15.4/css/all.min.css"],
-    i18n: {
-    defaultLocale: 'zh-cn',
-    locales: ['zh-cn'],
-  },
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -59,9 +55,15 @@ const config = {
         title: '代码高亮',
         logo: {
           alt: 'Site Logo',
-          src: 'img/avatar-circle.png',
+          src: 'img/avatar-circle-min.png',
         },
         items: [
+          {
+            to: '/', 
+            label: '首页', 
+            position: 'right',
+            activeBaseRegex: '/$',
+          },
           {
             type: 'doc',
             docId: 'intro',
@@ -90,6 +92,8 @@ const config = {
             <a class="custom_social_link" href="https://twitter.com/im_sorghum" target="_blank" ><i class="fab fa-twitter"></i></a>
             <a class="custom_social_link" href="https://www.linkedin.com/in/gaoliangim/" target="_blank"><i class="fab fa-linkedin"></i></a>
             <a class="custom_social_link" href="https://hub.docker.com/u/gaoliang" target="_blank"><i class="fab fa-docker"></i></a>
+            <a class="custom_social_link" href="https://steamcommunity.com/id/gaoliangim/" target="_blank"><i class="fab fa-steam"></i></a>
+            <a class="custom_social_link" href="mailto:gaoliangim@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
           </div>
         </div>
         `,
