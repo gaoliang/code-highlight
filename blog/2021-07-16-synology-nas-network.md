@@ -1,3 +1,8 @@
+---
+date: 2021-07-16 20:00:00
+authors: [gaoliang]
+tags: [nas,docker]
+---
 # 群晖 frp 内网穿透配置（基于 Docker）与域名配置
 
 最近亚马逊群晖 nas 价格新低，购入了一台 DS220+ 双盘位 nas，奈何租房没有公网IP，群晖自带的 Quick Connect 转发又太慢，为了外网也能访问到 nas，只好自己配置内网穿透。

@@ -1,5 +1,4 @@
 ---
-slug: how-redis-do-persistence
 date: 2018-04-14 20:06:36
 title: Redis 的持久化机制
 authors: [gaoliang]
