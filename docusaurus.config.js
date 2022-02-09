@@ -71,6 +71,7 @@ const config = {
             label: '知识库',
           },
           {to: '/blog', label: 'Blog', position: 'right'},
+          {to: '/sideprojects', label: 'Side Projects', position: 'right'},
           {to: '/about', label: 'About', position: 'right'},
           {
             href: 'https://github.com/gaoliang/code-highlight',
