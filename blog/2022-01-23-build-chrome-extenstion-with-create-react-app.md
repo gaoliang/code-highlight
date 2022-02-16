@@ -15,7 +15,7 @@ tags: [react,browser-extension]
 这里使用 [create-react-app](https://create-react-app.dev/) 脚手架来生成 react 代码项目结构
 
 ```bash
-yarn create create-react-app tab-tree
+yarn create create-react-app some-extension
 ```
 
 执行完成后得到初始的项目结构如下
@@ -63,10 +63,13 @@ create-react-app 生成的 manifest.json 文件是为 [PWA](https://developer.mo
   "action": {
     "default_popup": "index.html"
   }
+  "options_page": "index.html",
 }
 ```
 
-浏览器插件通常需要 [后台脚本](https://developer.chrome.com/docs/extensions/mv3/background_pages/), [内容脚本](https://developer.chrome.com/docs/extensions/mv3/content_scripts/),  [可选的页面](https://developer.chrome.com/docs/extensions/mv3/options/) 组成，这里我们只配置了一个 default_popup 页面，即点击浏览器图标之后，展示的页面。 
+浏览器插件通常需要 [后台脚本](https://developer.chrome.com/docs/extensions/mv3/background_pages/), [内容脚本](https://developer.chrome.com/docs/extensions/mv3/content_scripts/),  [可选的页面](https://developer.chrome.com/docs/extensions/mv3/options/) 组成，这里我们先只配置 popup 和 options 配置页，即点击浏览器图标弹出的页面和插件的选项页面。 
+
+由于都指向了编译后的 index.html 文件，两个页面此时展示的内容是一样的。 
 
 同时，我们可以移除 `public/index.html` 中对 manifest.json 的引用，因为浏览器扩展并不需要被另存为 PWA 应用。 
 
@@ -82,15 +85,53 @@ create-react-app 生成的 manifest.json 文件是为 [PWA](https://developer.mo
 
 ![image-20220123203904717](imgs/image-20220123203904717.png)
 
-### 3. 配置 background.js 和 content.js
+### 3. 配置 webpack multi entry 以打包 background.js 和 content.js
 
 background.js 是运行在后台的 js 脚本，可以和浏览器扩展 API  进行交互，content.js 是被注入到浏览器页面中的脚本，不可以和浏览器扩展 API 交互，但是可以和 background.js 进行交互。 
 
-如果我们不需要他们使用 webpack 进行管理，可以直接将这两个文件放在 public 目录下，然后在 manifest 文件中引用。
+为了能够使用现代化的前端工作流，我们需要对  background.js 和 content.js 进行打包。但 create-react-app 背后的 react-scripts 帮助我们管理了 webpack、babel 等各种配置，默认情况下，webpack 只有一个 entry，因此需要修改 create-react-app 默认的 webpack 配置，增加 entry。 
 
-我们在 background.js 中调用浏览器扩展接口
+修改 create-react-app 的配置通常有两种方法，一种是使用 npm run eject 将所有的配置项都弹出，不再隐藏，但这样的问题是后续都需要手动维护所有的配置，遇到 create-react-app 升级时，就会非常痛苦。 另外一种是使用 craco 或者 react-app-rewired 这样的工具，在不 eject 的情况下修改部分配置。 
 
+这里我们使用 craco 进行修改。 
+
+craco.config.js 的配置如下
+
+```js
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+module.exports = () => {
+    return {
+        webpack: {
+            configure: (webpackConfig, { env }) => {
+                if (env !== 'development') {
+                    const htmlWebpackPluginInstance = webpackConfig.plugins.find(
+                        webpackPlugin => webpackPlugin instanceof HtmlWebpackPlugin
+                    );
+                    if (htmlWebpackPluginInstance) {
+                        htmlWebpackPluginInstance.userOptions.chunks = ['main'];  // 只保留页面 js，避免注入 background.js
+                    }
+                }
+                webpackConfig.entry = {
+                    main: webpackConfig.entry,      // 默认的页面主入口
+                    background: './src/background.js'      // background.js 入口
+                }
+                webpackConfig.output = {
+                    ...webpackConfig.output,
+                    filename: 'static/js/[name].js',       // 去掉 hash，避免生成的文件每次文件名不同
+                }
+                console.log(webpackConfig)
+                return webpackConfig;
+            },
+        },
+    };
+};
 ```
+
+
+
+我们在 src/background.js 中调用浏览器扩展接口
+
+```js
 // background.js
 let color = '#3aa757';
 
@@ -113,7 +154,7 @@ chrome.runtime.onInstalled.addListener(() => {
     "default_popup": "index.html"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "static/js/background.js"
   }
 }
 ```
@@ -122,22 +163,80 @@ chrome.runtime.onInstalled.addListener(() => {
 
 ![image-20220123211046671](imgs/image-20220123211046671.png)
 
-## 优化插件展示
+### 4. 让 popup、options 显示不同的页面
 
-### 1. 调整 popup 窗口大小
+此问题其实有多个解决方案
 
-popup 窗口目前非常小，无法展示足够的内容，需要修改 index.html 来调整，添加如下样式
+1. 使用 multi entry 打包多个 html 静态页面。
+2. 使用 react-router 的 hash 路由。 
 
-```css
-    <style>
-      body {
-        height: 600px;
-        width: 600px;
-      }
-    </style>
+为了减少插件体积，并且尽量少的修改 create-react-app 的配置，在这我们使用 react-router 的 hash 路由模式。
+
+```html
+        <HashRouter>
+            <Routes>
+                <Route path="/options" element={<Options />}>
+                </Route>
+                <Route path="/popup" element={<Popup />}>
+                </Route>
+            </Routes>
+        </HashRouter>
 ```
 
-注意，浏览器 popup 窗口的最大大小是 600 * 600， 超过的将会出现滚动条
+
+
+manifest 调整为
+
+```js
+  "action": {
+    "default_popup": "index.html#/popup"
+  },
+  "options_page": "index.html#/options",
+```
+
+
+
+## 其他问题记录
+
+### 1. 使用 **[webextension-polyfill](https://github.com/mozilla/webextension-polyfill)**
+
+[webextension-polyfill](https://github.com/mozilla/webextension-polyfill#supported-browsers) 是 [mozilla](https://github.com/mozilla) 开源的一个浏览器扩展兼容库，如果我们需要浏览器插件同时兼容 Chrome 和 Firefox，可以使用该库来抹平 API 差异。 另外一个好处是，该库提供的 API 是 Promise 风格的，可以更方便的组织代码。 
+
+### 2.  组件库样式加载迟滞问题
+
+使用 Ant Design 时，出现了 页面先出现原生样式的骨架，然后才逐渐出现框架样式的问题。经过排查发现是最新版的 webpack 注入 script 时，默认是注入到 head 中，添加 了 defer 标签异步执行的的。 修改为 注入到 body 中阻塞执行即可。  
+
+```javascript
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+module.exports = () => {
+    return {
+        webpack: {
+            configure: (webpackConfig, { env }) => {
+                if (env !== 'development') {
+                    const htmlWebpackPluginInstance = webpackConfig.plugins.find(
+                        webpackPlugin => webpackPlugin instanceof HtmlWebpackPlugin
+                    );
+                    if (htmlWebpackPluginInstance) {
+                        htmlWebpackPluginInstance.userOptions.inject = 'body';              // js 文件注入到 body 中
+                        htmlWebpackPluginInstance.userOptions.scriptLoading = 'blocking';   // 阻塞执行
+                        htmlWebpackPluginInstance.userOptions.chunks = ['main'];
+                    }
+                }
+                webpackConfig.entry = {
+                    main: webpackConfig.entry,
+                    background: './src/background.js'
+                }
+                webpackConfig.output = {
+                    ...webpackConfig.output,
+                    filename: 'static/js/[name].js',
+                }
+                console.log(webpackConfig)
+                return webpackConfig;
+            },
+        },
+    };
+};
+```
 
 
 
