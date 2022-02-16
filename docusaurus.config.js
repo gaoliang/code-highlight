@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: '代码高亮',
   tagline: 'Code Highlight - Make every line of code shine.',
-  url: 'https://gaoliang.me',
+  url: 'https://www.gaoliang.me',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
