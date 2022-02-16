@@ -42,6 +42,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [{name: 'keywords', content: '代码高亮,blog,wiki'}],
       colorMode: {
         defaultMode: "dark",
         disableSwitch: false,
