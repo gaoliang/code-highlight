@@ -96,6 +96,7 @@ const config = {
             <a class="custom_social_link" href="https://hub.docker.com/u/gaoliang" target="_blank"><i class="fab fa-docker"></i></a>
             <a class="custom_social_link" href="https://steamcommunity.com/id/gaoliangim/" target="_blank"><i class="fab fa-steam"></i></a>
             <a class="custom_social_link" href="mailto:gaoliangim@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+            <a class="custom_social_link" href="/wechat" target="_blank"><i class="fab fa-weixin"></i></a>
           </div>
         </div>
         `,
