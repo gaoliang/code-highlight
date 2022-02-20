@@ -1,6 +1,4 @@
-Dw# d
-
-# 面向对象的 SOLID 原则
+面向对象的 SOLID 原则
 
 SOLID 是由[罗伯特·C·马丁](https://zh.wikipedia.org/w/index.php?title=Robert_C._Martin&action=edit&redlink=1)在21世纪早期引入的[面向对象编程](https://zh.wikipedia.org/wiki/面向对象编程)和[面向对象设计](https://zh.wikipedia.org/wiki/面向对象设计)的五个基本原则。
 
