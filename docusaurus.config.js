@@ -46,11 +46,7 @@ const config = {
       colorMode: {
         defaultMode: "dark",
         disableSwitch: false,
-        respectPrefersColorScheme: false,
-        switchConfig: {
-          darkIcon: '🌙',
-          lightIcon: '☀️',
-        },
+        respectPrefersColorScheme: false
       },
       navbar: {
         title: '代码高亮',
