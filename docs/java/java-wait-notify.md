@@ -87,3 +87,32 @@ public final synchronized void join() throws InterruptedException {
 ```
 
 当线程终止时，会调用线程自身的 notifyAll 方法，会通知所有等待在该线程对象上的线程。 
+
+## 等待超时的经典范式
+
+开发中经常遇到的一个场景是调用一个方法时等待一段时间（一般来说是一个时间段），如果该方法在时间段内得到结果，就立即返回，否则返回默认结果或抛出一场。 
+
+我们只需要对前面的等待/通知模型进行小小的改造，就可以实现这个功能。 
+
+假设超时时间段是 T，那么可以推断出在 now + T 之后就会超时
+
+定义如下变量：
+
+- 等待持续时间：REMAINING = T
+- 超时时间：FUTURE = now + T
+
+这是仅需要 wait(REMAINING) 即可，在 wait(REMAINING) 返回之后会继续执行; REMAINING = future - now。 如果 REMAINIG 小于等于0，表示已经超时，直接退出，否则将继续执行 wait(REMAINING)
+
+```java
+// 对当前对象加锁
+public synchronized Object get(long mills) throws INterruptedException {
+    long future = System.currentTimeMillis() + mills;
+    long remaining = mills;
+    while(result == null && remaining > 0) {
+        wait(remaining);
+        remaining = future - System.currentTimeMillis();
+    }
+    return result;
+}
+```
+
