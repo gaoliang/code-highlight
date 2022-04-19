@@ -27,10 +27,16 @@ const config = {
           editUrl: 'https://github.com/gaoliang/code-highlight/edit/main/',
         },
         blog: {
+          blogSidebarTitle: 'All Posts',
+          blogSidebarCount: 'ALL',
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
             'https://github.com/gaoliang/code-highlight/edit/main/',
+          feedOptions: {
+              type: 'all',
+              copyright: `Copyright © ${new Date().getFullYear()} Gaoliang.`,
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
